@@ -5,18 +5,56 @@ import { ProtectedRoute, GuestRoute } from './ProtectedRoute';
 import { LoadingScreen } from '@/components/loaders/LoadingScreen';
 
 // ─── Lazy-loaded pages ───────────────────────────────────────────────────────
-const Landing          = lazy(() => import('@/pages/Landing'));
-const Login            = lazy(() => import('@/pages/auth/Login'));
-const Register         = lazy(() => import('@/pages/auth/Register'));
-const ForgotPassword   = lazy(() => import('@/pages/auth/ForgotPassword'));
+const Landing            = lazy(() => import('@/pages/Landing'));
+const Login              = lazy(() => import('@/pages/auth/Login'));
+const Register           = lazy(() => import('@/pages/auth/Register'));
+const ForgotPassword     = lazy(() => import('@/pages/auth/ForgotPassword'));
 
-const AdminDashboard   = lazy(() => import('@/pages/admin/Dashboard'));
-const DoctorDashboard  = lazy(() => import('@/pages/doctor/Dashboard'));
+// Admin pages
+const AdminDashboard     = lazy(() => import('@/pages/admin/Dashboard'));
+const AdminAppointments   = lazy(() => import('@/pages/admin/Appointments'));
+const AdminDoctors        = lazy(() => import('@/pages/admin/Doctors'));
+const AdminPatients       = lazy(() => import('@/pages/admin/Patients'));
+const AdminDepartments    = lazy(() => import('@/pages/admin/Departments'));
+const AdminStaff          = lazy(() => import('@/pages/admin/Staff'));
+const AdminBilling        = lazy(() => import('@/pages/admin/Billing'));
+const AdminReports        = lazy(() => import('@/pages/admin/Reports'));
+const AdminAnalytics      = lazy(() => import('@/pages/admin/Analytics'));
+const AdminSettings       = lazy(() => import('@/pages/admin/Settings'));
+const AdminSecurity       = lazy(() => import('@/pages/admin/Security'));
+const AdminActivity       = lazy(() => import('@/pages/admin/Activity'));
+
+// Doctor pages
+const DoctorDashboard    = lazy(() => import('@/pages/doctor/Dashboard'));
+const DoctorSchedule     = lazy(() => import('@/pages/doctor/Schedule'));
+const DoctorQueue        = lazy(() => import('@/pages/doctor/Queue'));
+const DoctorAppointments = lazy(() => import('@/pages/doctor/Appointments'));
+const DoctorPatients     = lazy(() => import('@/pages/doctor/Patients'));
+const DoctorRecords      = lazy(() => import('@/pages/doctor/Records'));
+
+// Reception pages
 const ReceptionDashboard = lazy(() => import('@/pages/reception/Dashboard'));
-const PatientDashboard = lazy(() => import('@/pages/patient/Dashboard'));
+const ReceptionQueue     = lazy(() => import('@/pages/reception/Queue'));
+const ReceptionAppointments = lazy(() => import('@/pages/reception/Appointments'));
+const ReceptionCheckin   = lazy(() => import('@/pages/reception/Checkin'));
+const ReceptionPatients  = lazy(() => import('@/pages/reception/Patients'));
+const ReceptionDoctors   = lazy(() => import('@/pages/reception/Doctors'));
 
-const NotFound         = lazy(() => import('@/pages/errors/NotFound'));
-const ServerError      = lazy(() => import('@/pages/errors/ServerError'));
+// Patient pages
+const PatientDashboard    = lazy(() => import('@/pages/patient/Dashboard'));
+const PatientQueue        = lazy(() => import('@/pages/patient/Queue'));
+const PatientBook         = lazy(() => import('@/pages/patient/Book'));
+const PatientAppointments = lazy(() => import('@/pages/patient/Appointments'));
+const PatientDoctors      = lazy(() => import('@/pages/patient/Doctors'));
+const PatientHistory      = lazy(() => import('@/pages/patient/History'));
+
+// Shared pages
+const SharedNotifications = lazy(() => import('@/pages/shared/Notifications'));
+const SharedSettings      = lazy(() => import('@/pages/shared/Settings'));
+
+// Error pages
+const NotFound           = lazy(() => import('@/pages/errors/NotFound'));
+const ServerError        = lazy(() => import('@/pages/errors/ServerError'));
 
 const S = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<LoadingScreen />}>{children}</Suspense>
@@ -48,17 +86,17 @@ const router = createBrowserRouter([
     element: <ProtectedRoute requiredRole="admin"><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <S><AdminDashboard /></S> },
-      { path: 'appointments', element: <S><AdminDashboard /></S> },
-      { path: 'doctors',      element: <S><AdminDashboard /></S> },
-      { path: 'patients',     element: <S><AdminDashboard /></S> },
-      { path: 'departments',  element: <S><AdminDashboard /></S> },
-      { path: 'staff',        element: <S><AdminDashboard /></S> },
-      { path: 'billing',      element: <S><AdminDashboard /></S> },
-      { path: 'reports',      element: <S><AdminDashboard /></S> },
-      { path: 'analytics',    element: <S><AdminDashboard /></S> },
-      { path: 'settings',     element: <S><AdminDashboard /></S> },
-      { path: 'security',     element: <S><AdminDashboard /></S> },
-      { path: 'activity',     element: <S><AdminDashboard /></S> },
+      { path: 'appointments', element: <S><AdminAppointments /></S> },
+      { path: 'doctors',      element: <S><AdminDoctors /></S> },
+      { path: 'patients',     element: <S><AdminPatients /></S> },
+      { path: 'departments',  element: <S><AdminDepartments /></S> },
+      { path: 'staff',        element: <S><AdminStaff /></S> },
+      { path: 'billing',      element: <S><AdminBilling /></S> },
+      { path: 'reports',      element: <S><AdminReports /></S> },
+      { path: 'analytics',    element: <S><AdminAnalytics /></S> },
+      { path: 'settings',     element: <S><AdminSettings /></S> },
+      { path: 'security',     element: <S><AdminSecurity /></S> },
+      { path: 'activity',     element: <S><AdminActivity /></S> },
     ],
   },
 
@@ -68,13 +106,13 @@ const router = createBrowserRouter([
     element: <ProtectedRoute requiredRole="doctor"><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <S><DoctorDashboard /></S> },
-      { path: 'schedule',      element: <S><DoctorDashboard /></S> },
-      { path: 'queue',         element: <S><DoctorDashboard /></S> },
-      { path: 'appointments',  element: <S><DoctorDashboard /></S> },
-      { path: 'patients',      element: <S><DoctorDashboard /></S> },
-      { path: 'records',       element: <S><DoctorDashboard /></S> },
-      { path: 'notifications', element: <S><DoctorDashboard /></S> },
-      { path: 'settings',      element: <S><DoctorDashboard /></S> },
+      { path: 'schedule',      element: <S><DoctorSchedule /></S> },
+      { path: 'queue',         element: <S><DoctorQueue /></S> },
+      { path: 'appointments',  element: <S><DoctorAppointments /></S> },
+      { path: 'patients',      element: <S><DoctorPatients /></S> },
+      { path: 'records',       element: <S><DoctorRecords /></S> },
+      { path: 'notifications', element: <S><SharedNotifications /></S> },
+      { path: 'settings',      element: <S><SharedSettings /></S> },
     ],
   },
 
@@ -84,12 +122,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute requiredRole="reception"><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <S><ReceptionDashboard /></S> },
-      { path: 'queue',         element: <S><ReceptionDashboard /></S> },
-      { path: 'appointments',  element: <S><ReceptionDashboard /></S> },
-      { path: 'checkin',       element: <S><ReceptionDashboard /></S> },
-      { path: 'patients',      element: <S><ReceptionDashboard /></S> },
-      { path: 'doctors',       element: <S><ReceptionDashboard /></S> },
-      { path: 'settings',      element: <S><ReceptionDashboard /></S> },
+      { path: 'queue',         element: <S><ReceptionQueue /></S> },
+      { path: 'appointments',  element: <S><ReceptionAppointments /></S> },
+      { path: 'checkin',       element: <S><ReceptionCheckin /></S> },
+      { path: 'patients',      element: <S><ReceptionPatients /></S> },
+      { path: 'doctors',       element: <S><ReceptionDoctors /></S> },
+      { path: 'settings',      element: <S><SharedSettings /></S> },
     ],
   },
 
@@ -99,13 +137,13 @@ const router = createBrowserRouter([
     element: <ProtectedRoute requiredRole="patient"><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <S><PatientDashboard /></S> },
-      { path: 'queue',         element: <S><PatientDashboard /></S> },
-      { path: 'book',          element: <S><PatientDashboard /></S> },
-      { path: 'appointments',  element: <S><PatientDashboard /></S> },
-      { path: 'doctors',       element: <S><PatientDashboard /></S> },
-      { path: 'history',       element: <S><PatientDashboard /></S> },
-      { path: 'notifications', element: <S><PatientDashboard /></S> },
-      { path: 'settings',      element: <S><PatientDashboard /></S> },
+      { path: 'queue',         element: <S><PatientQueue /></S> },
+      { path: 'book',          element: <S><PatientBook /></S> },
+      { path: 'appointments',  element: <S><PatientAppointments /></S> },
+      { path: 'doctors',       element: <S><PatientDoctors /></S> },
+      { path: 'history',       element: <S><PatientHistory /></S> },
+      { path: 'notifications', element: <S><SharedNotifications /></S> },
+      { path: 'settings',      element: <S><SharedSettings /></S> },
     ],
   },
 

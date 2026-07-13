@@ -22,10 +22,10 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
   if (requiredRole && user?.role !== requiredRole) {
     // Redirect to appropriate dashboard
     const dashboardMap: Record<UserRole, string> = {
-      admin:     '/admin',
-      doctor:    '/doctor',
+      admin: '/admin',
+      doctor: '/doctor',
       reception: '/reception',
-      patient:   '/patient',
+      patient: '/patient',
     };
     return <Navigate to={dashboardMap[user?.role ?? 'patient']} replace />;
   }
@@ -40,10 +40,10 @@ export function GuestRoute({ children }: { children: React.ReactNode }) {
 
   if (isAuthenticated && user) {
     const dashboardMap: Record<UserRole, string> = {
-      admin:     '/admin',
-      doctor:    '/doctor',
+      admin: '/admin',
+      doctor: '/doctor',
       reception: '/reception',
-      patient:   '/patient',
+      patient: '/patient',
     };
     return <Navigate to={dashboardMap[user.role]} replace />;
   }

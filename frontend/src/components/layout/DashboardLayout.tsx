@@ -27,7 +27,8 @@ export function DashboardLayout() {
       {/* Sidebar — always rendered, translated on mobile */}
       <div
         className={cn(
-          'fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300',
+          'fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300 shrink-0',
+          collapsed ? 'lg:w-[72px]' : 'lg:w-[260px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
