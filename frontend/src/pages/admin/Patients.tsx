@@ -1,23 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Search, Plus, Eye, Edit, Phone, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
-import { PATIENTS } from '@/lib/mockData';
+import { dataService } from '@/lib/dataService';
 
 export default function AdminPatients() {
   const [search, setSearch] = useState('');
+  const [patients, setPatients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = PATIENTS.filter(p =>
-    p.full_name.toLowerCase().includes(search.toLowerCase()) ||
-    p.phone.includes(search) ||
-    p.blood_group.includes(search.toUpperCase())
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await dataService.getPatients();
+        setPatients(data);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
+    };
+    load();
+  }, []);
+
+  const filtered = patients.filter(p =>
+    (p.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (p.phone || '').includes(search) ||
+    (p.blood_group || '').toUpperCase().includes(search.toUpperCase())
   );
 
   const genderBadge = (gender: string) => {
+    if (!gender) return 'bg-gray-100 text-gray-700';
     const map: Record<string, string> = { male: 'bg-blue-100 text-blue-700', female: 'bg-pink-100 text-pink-700', other: 'bg-gray-100 text-gray-700' };
-    return map[gender] ?? map.other;
+    return map[gender.toLowerCase()] ?? map.other;
   };
 
   return (
@@ -26,7 +42,7 @@ export default function AdminPatients() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="page-title">Patients</h1>
-          <p className="page-subtitle">{PATIENTS.length} registered patients</p>
+          <p className="page-subtitle">{patients.length} registered patients</p>
         </div>
         <Button leftIcon={<Plus size={16} />}>Add Patient</Button>
       </motion.div>
@@ -43,66 +59,70 @@ export default function AdminPatients() {
       </div>
 
       <Card>
-        <div className="overflow-x-auto -mx-6">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left border-b border-gray-100">
-                {['Patient', 'DOB', 'Gender', 'Blood', 'Phone', 'Last Visit', 'Visits', 'Actions'].map(h => (
-                  <th key={h} className="px-6 pb-3 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading patients...</div>
+        ) : (
+          <div className="overflow-x-auto -mx-6">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left border-b border-gray-100">
+                  {['Patient', 'DOB', 'Gender', 'Blood', 'Phone', 'Last Visit', 'Visits', 'Actions'].map(h => (
+                    <th key={h} className="px-6 pb-3 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {filtered.map((p, i) => (
+                  <motion.tr key={p.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={p.full_name} size="sm" />
+                        <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{p.full_name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3.5 text-sm text-gray-500 whitespace-nowrap">{p.date_of_birth || p.dob || '—'}</td>
+                    <td className="px-6 py-3.5">
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${genderBadge(p.gender)}`}>{p.gender || 'Unknown'}</span>
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">{p.blood_group || '—'}</span>
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-1.5 text-sm text-gray-600">
+                        <Phone size={12} className="text-gray-400" />
+                        {p.phone || '—'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                        <Calendar size={12} className="text-gray-400" />
+                        {p.last_visit || '—'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-3.5 text-sm text-gray-600">{p.total_visits || 0}</td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-1">
+                        <button className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="View"><Eye size={14} /></button>
+                        <button className="p-1.5 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Edit"><Edit size={14} /></button>
+                      </div>
+                    </td>
+                  </motion.tr>
                 ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map((p, i) => (
-                <motion.tr key={p.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-2.5">
-                      <Avatar name={p.full_name} size="sm" />
-                      <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{p.full_name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-gray-500 whitespace-nowrap">{p.date_of_birth}</td>
-                  <td className="px-6 py-3.5">
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${genderBadge(p.gender)}`}>{p.gender}</span>
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">{p.blood_group}</span>
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                      <Phone size={12} className="text-gray-400" />
-                      {p.phone}
-                    </div>
-                  </td>
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                      <Calendar size={12} className="text-gray-400" />
-                      {p.last_visit}
-                    </div>
-                  </td>
-                  <td className="px-6 py-3.5 text-sm text-gray-600">{p.total_visits}</td>
-                  <td className="px-6 py-3.5">
-                    <div className="flex items-center gap-1">
-                      <button className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="View"><Eye size={14} /></button>
-                      <button className="p-1.5 rounded-lg text-gray-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Edit"><Edit size={14} /></button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <div className="text-center py-12 text-gray-400">
-              <Users size={40} className="mx-auto mb-3 opacity-30" />
-              <p className="text-sm">No patients found.</p>
-            </div>
-          )}
-        </div>
+              </tbody>
+            </table>
+            {filtered.length === 0 && (
+              <div className="text-center py-12 text-gray-400">
+                <Users size={40} className="mx-auto mb-3 opacity-30" />
+                <p className="text-sm">No patients found.</p>
+              </div>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );

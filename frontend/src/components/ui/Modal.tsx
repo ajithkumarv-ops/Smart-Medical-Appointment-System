@@ -62,12 +62,12 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', showClose
           >
             {/* Header */}
             {(title || showClose) && (
-              <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-                {title && <h2 className="text-lg font-display font-semibold text-gray-900">{title}</h2>}
+              <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 shrink-0">
+                {title && <h2 className="text-base sm:text-lg font-display font-semibold text-gray-900">{title}</h2>}
                 {showClose && (
                   <button
                     onClick={onClose}
-                    className="ml-auto text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                    className="ml-auto text-gray-400 hover:text-gray-600 transition-colors p-2 -mr-2 sm:-mr-0 rounded-lg hover:bg-gray-100"
                     aria-label="Close modal"
                   >
                     <X size={20} />
@@ -76,7 +76,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', showClose
               </div>
             )}
             {/* Body */}
-            <div className="p-6">{children}</div>
+            <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(100vh-8rem)]">{children}</div>
           </motion.div>
         </div>
       )}

@@ -1,12 +1,29 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Plus, Clock, Stethoscope } from 'lucide-react';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/Badge';
-import { APPOINTMENTS } from '@/lib/mockData';
+import { dataService } from '@/lib/dataService';
 
 export default function ReceptionAppointments() {
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await dataService.getAppointments();
+        setAppointments(data);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
+    };
+    load();
+  }, []);
+
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
@@ -49,37 +66,41 @@ export default function ReceptionAppointments() {
 
       {/* Appointments list */}
       <Card>
-        <CardHeader title="Today's Schedule" subtitle={`${APPOINTMENTS.length} appointments`} icon={<Stethoscope size={18} />} />
-        <div className="space-y-3">
-          {APPOINTMENTS.map((appt, i) => (
-            <motion.div key={appt.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl border border-gray-100 hover:border-brand-200 hover:bg-brand-50/20 transition-all"
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <div className="text-center shrink-0">
-                  <p className="text-xs text-gray-400 font-mono">{appt.id}</p>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <Clock size={10} className="text-gray-400" />
-                    <p className="text-sm font-bold text-gray-700">{appt.time}</p>
+        <CardHeader title="Today's Schedule" subtitle={`${appointments.length} appointments`} icon={<Stethoscope size={18} />} />
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading appointments...</div>
+        ) : (
+          <div className="space-y-3">
+            {appointments.map((appt, i) => (
+              <motion.div key={appt.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl border border-gray-100 hover:border-brand-200 hover:bg-brand-50/20 transition-all"
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="text-center shrink-0">
+                    <p className="text-xs text-gray-400 font-mono">{appt.id}</p>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <Clock size={10} className="text-gray-400" />
+                      <p className="text-sm font-bold text-gray-700">{appt.time}</p>
+                    </div>
+                  </div>
+                  <div className="h-8 w-px bg-gray-200 hidden sm:block" />
+                  <Avatar name={appt.patient} size="sm" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800">{appt.patient}</p>
+                    <p className="text-xs text-gray-500">{appt.doctor} · {appt.dept}</p>
                   </div>
                 </div>
-                <div className="h-8 w-px bg-gray-200 hidden sm:block" />
-                <Avatar name={appt.patient} size="sm" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800">{appt.patient}</p>
-                  <p className="text-xs text-gray-500">{appt.doctor} · {appt.dept}</p>
+                <div className="flex items-center gap-3">
+                  <span className="badge-blue text-xs">${appt.fee}</span>
+                  <StatusBadge status={appt.status} />
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="badge-blue text-xs">${appt.fee}</span>
-                <StatusBadge status={appt.status} />
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );

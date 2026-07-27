@@ -98,34 +98,34 @@ export default function PatientDashboard() {
                   <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                   <span className="text-blue-200 text-sm font-medium">Active Queue Token</span>
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                   <div>
                     <p className="text-blue-200 text-xs uppercase tracking-wide">Queue Number</p>
-                    <p className="font-display text-5xl font-bold text-white leading-none">#{queueEntry.queue_number}</p>
+                    <p className="font-display text-4xl sm:text-5xl font-bold text-white leading-none">#{queueEntry.queue_number}</p>
                   </div>
-                  <div className="h-12 w-px bg-white/20" />
+                  <div className="hidden sm:block h-12 w-px bg-white/20" />
                   <div>
                     <p className="text-blue-200 text-xs uppercase tracking-wide">Your Position</p>
-                    <p className="font-display text-3xl font-bold text-white">{waitingAhead + 1}</p>
+                    <p className="font-display text-2xl sm:text-3xl font-bold text-white">{waitingAhead + 1}</p>
                     <p className="text-blue-300 text-xs">in queue</p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <div className="glass rounded-2xl p-4 text-center min-w-[100px]">
-                  <Clock size={18} className="text-blue-300 mx-auto mb-1" />
-                  <p className="font-display text-xl font-bold text-white">{waitingAhead * 10 + 5}</p>
-                  <p className="text-blue-300 text-xs">min wait</p>
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:gap-4 w-full md:w-auto">
+                <div className="glass rounded-2xl p-3 sm:p-4 text-center">
+                  <Clock size={16} className="text-blue-300 mx-auto mb-1" />
+                  <p className="font-display text-lg sm:text-xl font-bold text-white">{waitingAhead * 10 + 5}</p>
+                  <p className="text-blue-300 text-[10px] sm:text-xs">min wait</p>
                 </div>
-                <div className="glass rounded-2xl p-4 text-center min-w-[100px]">
-                  <Stethoscope size={18} className="text-blue-300 mx-auto mb-1" />
-                  <p className="font-semibold text-white text-sm">{queueEntry.doctor?.split(' ').slice(-1)}</p>
-                  <p className="text-blue-300 text-xs">{queueEntry.dept}</p>
+                <div className="glass rounded-2xl p-3 sm:p-4 text-center">
+                  <Stethoscope size={16} className="text-blue-300 mx-auto mb-1" />
+                  <p className="font-semibold text-white text-xs sm:text-sm">{queueEntry.doctor?.split(' ').slice(-1)}</p>
+                  <p className="text-blue-300 text-[10px] sm:text-xs">{queueEntry.dept}</p>
                 </div>
-                <div className="glass rounded-2xl p-4 text-center min-w-[100px]">
-                  <Calendar size={18} className="text-blue-300 mx-auto mb-1" />
-                  <p className="font-semibold text-white text-sm">{queueEntry.check_in}</p>
-                  <p className="text-blue-300 text-xs">Check-in</p>
+                <div className="glass rounded-2xl p-3 sm:p-4 text-center col-span-2 sm:col-span-1">
+                  <Calendar size={16} className="text-blue-300 mx-auto mb-1" />
+                  <p className="font-semibold text-white text-xs sm:text-sm">{queueEntry.check_in}</p>
+                  <p className="text-blue-300 text-[10px] sm:text-xs">Check-in</p>
                 </div>
               </div>
             </div>

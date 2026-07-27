@@ -140,9 +140,10 @@ const navConfig: Record<UserRole, Array<{
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  onNavClick?: () => void;
 }
 
-export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggle, onNavClick }: SidebarProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -158,14 +159,14 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
   return (
     <motion.aside
-      animate={{ width: isCollapsed ? 72 : 260 }}
+      animate={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? 260 : (isCollapsed ? 72 : 260) }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className="sidebar no-scrollbar overflow-y-auto overflow-x-hidden"
     >
       {/* Logo */}
       <div className={cn(
         'flex items-center h-16 px-4 border-b border-gray-100 shrink-0',
-        isCollapsed ? 'justify-center' : 'gap-3'
+        (isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) ? 'justify-center' : 'gap-3'
       )}>
         <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-brand shrink-0 shadow-brand">
           <Hospital size={18} className="text-white" />
@@ -190,8 +191,8 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <button
           onClick={onToggle}
           className={cn(
-            'ml-auto text-gray-400 hover:text-brand-600 transition-colors p-1 rounded-lg hover:bg-brand-50',
-            isCollapsed && 'hidden'
+            'ml-auto text-gray-400 hover:text-brand-600 transition-colors p-1 rounded-lg hover:bg-brand-50 hidden lg:block',
+            (isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) && 'lg:hidden'
           )}
           aria-label="Collapse sidebar"
         >
@@ -204,7 +205,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         {groups.map(group => (
           <div key={group.group}>
             <AnimatePresence>
-              {!isCollapsed && (
+              {!(isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) && (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -221,6 +222,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   key={item.path}
                   to={item.path}
                   end={item.path === `/${role}` || item.path === '/admin'}
+                  onClick={onNavClick}
                   className={({ isActive }: { isActive: boolean }) =>
                     cn(
                       'nav-item relative',
@@ -232,7 +234,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 >
                   <item.icon size={18} className="shrink-0" />
                   <AnimatePresence>
-                    {!isCollapsed && (
+                    {!(isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) && (
                       <motion.span
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -243,12 +245,12 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                       </motion.span>
                     )}
                   </AnimatePresence>
-                  {item.badge && !isCollapsed && (
+                  {item.badge && !(isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) && (
                     <span className="ml-auto text-[10px] font-bold bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
                       {item.badge}
                     </span>
                   )}
-                  {item.badge && isCollapsed && (
+                  {item.badge && (isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) && (
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
                   )}
                 </NavLink>
@@ -261,9 +263,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       {/* User profile footer */}
       <div className={cn(
         'border-t border-gray-100 p-3 shrink-0',
-        isCollapsed ? 'flex justify-center' : ''
+        (isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) ? 'flex justify-center' : ''
       )}>
-        {isCollapsed ? (
+        {(isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024) ? (
           <button
             onClick={handleLogout}
             className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-50"

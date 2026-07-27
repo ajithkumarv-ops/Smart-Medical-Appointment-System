@@ -35,6 +35,7 @@ export function DashboardLayout() {
         <Sidebar
           isCollapsed={collapsed}
           onToggle={() => setCollapsed(v => !v)}
+          onNavClick={() => setMobileOpen(false)}
         />
       </div>
 

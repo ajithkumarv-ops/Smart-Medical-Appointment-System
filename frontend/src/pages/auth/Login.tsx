@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowRight, Hospital } from 'lucide-react';
 import { useAuth } from '@/store/AuthContext';
@@ -15,9 +15,7 @@ const DEMO_ACCOUNTS = [
 
 export default function Login() {
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/';
+  // Navigation is handled automatically by GuestRoute when AuthContext state updates
 
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -30,12 +28,12 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
+      console.log('[Login] Calling login...');
       await login(email, password);
-      // Redirect to role dashboard
-      navigate(from, { replace: true });
+      console.log('[Login] Login successful. Awaiting GuestRoute redirect...');
+      // Navigation is now handled automatically by GuestRoute to prevent race conditions
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };

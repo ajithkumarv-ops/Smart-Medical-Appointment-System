@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Phone, ArrowRight, ArrowLeft, Hospital, Check } from 'lucide-react';
 import { useAuth } from '@/store/AuthContext';
@@ -17,7 +17,7 @@ const STEPS = ['Account Type', 'Personal Info', 'Security'];
 
 export default function Register() {
   const { register } = useAuth();
-  const navigate = useNavigate();
+  // Navigation is handled automatically by GuestRoute when AuthContext state updates
 
   const [step,    setStep]    = useState(0);
   const [loading, setLoading] = useState(false);
@@ -56,11 +56,12 @@ export default function Register() {
     if (!validateStep()) return;
     setLoading(true);
     try {
+      console.log('[Register] Calling register...');
       await register({ email: form.email, password: form.password, full_name: form.full_name, role: form.role, phone: form.phone });
-      navigate(`/${form.role}`);
+      console.log('[Register] Register successful. Awaiting GuestRoute redirect...');
+      // Navigation is now handled automatically by GuestRoute to prevent race conditions
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Registration failed.');
-    } finally {
       setLoading(false);
     }
   };
