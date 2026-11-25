@@ -102,6 +102,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Don't fail the registration if the DB insert fails (e.g. table not ready)
         }
       }
+
+      // Automatically sign in immediately after registration
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (loginError) {
+        console.warn('Auto-login after registration failed (email verification might be required):', loginError);
+      }
     } finally {
       setIsLoading(false);
     }
